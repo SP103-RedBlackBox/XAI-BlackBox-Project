@@ -7,10 +7,16 @@ def main():
     st.title("Income Prediction Dashboard", text_alignment='center')
     st.header("Input Data Below or Upload a File to Predict Annual Salary", text_alignment='center')
 
-    user_input = st.toggle("Directly input data values")
+    # Data upload choice
+    data_choice = st.radio(
+        "Choose which method to input data",
+        ['Direct value input','Upload .csv file']
+    )
+
     df = None
 
-    if user_input:
+    # User input direct data values
+    if data_choice == 'Direct value input':
         left_column, right_column = st.columns(2)
 
         #age,workclass,education.num,marital.status,occupation,relationship,race,sex,capital.gain,capital.loss,hours.per.week,native.country
@@ -76,8 +82,12 @@ def main():
         }
 
         df = pd.DataFrame(data, index=[0])
-    
-    file = st.file_uploader("Upload a .csv file", type='csv')
+    # User csv file upload
+    else:
+        file = st.file_uploader("Upload a .csv file", type='csv')
+
+    # model = explainability_methods.load_model()
+    # shap = explainability_methods.load_SHAP_explainer(model, )
 
     shap_left_column, lime_right_column = st.columns(2)
     shap_left_column.title('SHAP Prediction')
