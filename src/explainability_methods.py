@@ -5,12 +5,16 @@ import numpy as np
 import pandas as pd
 import joblib
 from lime.lime_tabular import LimeTabularExplainer
-from turtle import st
+import streamlit as st
+from pathlib import Path
 
 # Loads saved model
 @st.cache_resource
 def load_model():
-    saved_model = joblib.load('xgb_pipeline.joblib')
+    root_dir = Path().resolve().parent
+    st.write(root_dir)
+    model_path = root_dir / "models" / "xgb_pipeline.joblib"
+    saved_model = joblib.load(model_path)
     model = saved_model.named_steps['model']
 
     return model
