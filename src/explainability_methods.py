@@ -20,12 +20,6 @@ def load_model_preprocessor():
     return model, preprocessor
 
 # Load SHAP and LIME explainers
-'''
-def load_SHAP_explainer(model, preprocessor, X_processed):
-    explainer = shap.TreeExplainer(model, X_processed, model_output='probability', feature_names=preprocessor.get_feature_names_out())
-    return explainer
-'''
-
 def load_SHAP_explainer(model, preprocessor, X_preprocessed):
     root_dir = Path().resolve().parent
     background = joblib.load(root_dir / 'data' / 'background_sample.joblib')
