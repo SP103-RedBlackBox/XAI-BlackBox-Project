@@ -39,22 +39,64 @@ def info_box(text):
 
 def main():
     st.markdown("""
-        # Welcome to the Income Prediction Dashboard!
+    # Welcome to the Income Prediction Dashboard!
+    This interactive tool predicts whether an individual is likely to earn **more or less than $50,000 per year** based on the information provided.
 
-        This interactive tool predicts whether an individual is likely to earn **more or less than $50,000 per year** based on the information provided.
+    ### What you can do:
+    - **Enter data manually** for a single prediction  
+    - **Upload a CSV file** to generate predictions in bulk
 
-        ### What you can do:
-        - **Enter data manually** for a single prediction  
-        - **Upload a CSV file** to generate predictions in bulk  
+    ### Data Requirements and Clarifications:
+    """)
 
-        ### Explainable AI Insights:
-        In addition to predictions, the dashboard provides:
+    req_col1, req_col2 = st.columns(2)
 
-        - **SHAP explanations** to show how each feature impacts the prediction
-        - **LIME explanations** to highlight the most influential factors for individual cases  
+    with req_col1:
+        st.markdown("""
+    **Make sure these columns are present in your CSV file:**
+    - `age`
+    - `workclass`
+    - `education.num`
+    - `marital.status`
+    - `occupation`
+    - `relationship`
+    - `race`
+    - `sex`
+    - `capital.gain`
+    - `capital.loss`
+    - `hours.per.week`
+    - `native.country`
+    """)
 
-        Our goal is to make the model’s decisions more **transparent, interpretable, and trustworthy**.
-        """)
+    with req_col2:
+        st.markdown("""
+    **Education number mapping:**
+    - `1: Preschool`
+    - `2: 1st-4th`
+    - `3: 5th-6th`
+    - `4: 7th-8th`
+    - `5: 9th`
+    - `6: 10th`
+    - `7: 11th`
+    - `8: 12th`
+    - `9: HS-grad`
+    - `10: Some-college`
+    - `11: Assoc-voc`
+    - `12: Assoc-acdm`
+    - `13: Bachelors`
+    - `14: Masters`
+    - `15: Doctorate`
+    - `16: Prof-school`
+    """)
+
+    st.markdown("""
+    ### Explainable AI Insights:
+    In addition to predictions, the dashboard provides:
+    - **SHAP explanations** to show how each feature impacts the prediction
+    - **LIME explanations** to highlight the most influential factors for individual cases  
+
+    Our goal is to make the model's decisions more **transparent, interpretable, and trustworthy**.
+    """)
     st.divider()
     st.subheader("Input Data Below or Upload a File to Predict Salary >50k or <=50k", text_alignment='center')
 
