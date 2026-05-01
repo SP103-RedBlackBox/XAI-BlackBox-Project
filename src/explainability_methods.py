@@ -26,9 +26,11 @@ def load_SHAP_explainer(model, preprocessor, X_preprocessed):
     explainer = shap.TreeExplainer(model, background, model_output='probability', feature_names=preprocessor.get_feature_names_out())
     return explainer
 
-def load_LIME_explainer(model, preprocessor, X_processed):
+def load_LIME_explainer(model, preprocessor):
+    root_dir = Path().resolve().parent
+    background = joblib.load(root_dir / 'data' / 'background_sample.joblib')
     explainer = LimeTabularExplainer(
-    training_data=X_processed,
+    training_data=background,
     feature_names=preprocessor.get_feature_names_out(),
     class_names=['<=50K', '>50K'],
     mode='classification'
@@ -71,12 +73,12 @@ def LIME_explanation(explainer, index, X_processed, model):
     num_features=10
     )
 
-    lime_data = pd.DataFrame(lime_exp.as_list(), columns=['Feature', 'Weight'])
-    st.dataframe(lime_data)
-
     fig = lime_exp.as_pyplot_figure()
     plt.tight_layout()
     st.pyplot(fig)
     plt.close(fig)    
+
+    lime_data = pd.DataFrame(lime_exp.as_list(), columns=['Feature', 'Weight'])
+    st.dataframe(lime_data)
 
 

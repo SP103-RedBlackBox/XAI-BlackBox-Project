@@ -14,6 +14,29 @@ from src import explainability_methods
 # Initialize SHAP
 shap.initjs()
 
+def info_box(text):
+    st.markdown(f"""
+        <div style="
+            background-color: #1a1f2e;
+            border: 1px solid #2d3550;
+            border-radius: 10px;
+            padding: 16px 24px 16px 24px;
+            margin: 12px 0;
+            color: #d0d4e0;
+            font-size: 0.875rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
+            line-height: 1.7;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            white-space: normal;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+        ">
+            {text.strip()}
+        </div>
+    """, unsafe_allow_html=True)
+
 def main():
     st.markdown("""
         # Welcome to the Income Prediction Dashboard!
@@ -27,7 +50,7 @@ def main():
         ### Explainable AI Insights:
         In addition to predictions, the dashboard provides:
 
-        - **SHAP explanations** to show how each feature impacts the prediction  
+        - **SHAP explanations** to show how each feature impacts the prediction
         - **LIME explanations** to highlight the most influential factors for individual cases  
 
         Our goal is to make the model’s decisions more **transparent, interpretable, and trustworthy**.
@@ -173,7 +196,7 @@ def main():
             st.session_state.shap_values = explainability_methods.get_SHAP_values(st.session_state.SHAP_explainer, processed_data)
             progress_bar.progress(70, text="Computing LIME explanations...")
 
-            st.session_state.LIME_explainer = explainability_methods.load_LIME_explainer(xgb_model, preprocessor, processed_data)
+            st.session_state.LIME_explainer = explainability_methods.load_LIME_explainer(xgb_model, preprocessor)
             progress_bar.progress(100, text="Done!")
 
             st.session_state.results_ready = True
@@ -220,18 +243,34 @@ def main():
             if shap_plot_choice == 'Summary Plot':
                 explainability_methods.SHAP_summary_plot(st.session_state.shap_values, st.session_state.processed_data, st.session_state.preprocessor.get_feature_names_out())
 
+                info_box("""
+                    The SHAP sumamary plot shows the impact of each feature on the model's predictions across all instances. Each point represents a SHAP value for a feature and instance, with color indicating the feature value (red = high, blue = low). The plot helps identify which features are most influential and how they affect the prediction direction (positive or negative).
+                    """)
+
             elif shap_plot_choice == 'Waterfall Plot':
                 index = st.number_input("Enter index of instance to explain", min_value=0, max_value=st.session_state.processed_data.shape[0]-1, step=1)
                 explainability_methods.SHAP_waterfall_plot(st.session_state.shap_values, index)
+
+                info_box("""
+                    The SHAP Waterfall plot provides a detailed explanation for a single individual. It shows how each feature contributes to pushing the prediction from the base value (average prediction) to the final predicted probability for that instance. Features that increase the prediction are showin in red, while those that decrease it are shown in blue. The length of the bars indicates the magnitude of the contribution. Keep in mind that the base value is the average model output across the training data, so the plot illustrates how the specific feature values of the instance influence its prediction compared to an average case. Thus, there can be instances where all features push towards a higher income (red bars) but the prediction is still <=50K if the base value is low enough and the contributions are not strong enough to push it over the threshold (>50% probability).        
+                    """)
 
             elif shap_plot_choice == 'Force Plot':
                 index = st.number_input("Enter index of instance to explain", min_value=0, max_value=st.session_state.processed_data.shape[0]-1, step=1)
                 explainability_methods.SHAP_force_plot(st.session_state.shap_values, index)
 
+                info_box("""
+                    The SHAP Force plot is another way to visualize the contribution of each feature for a single instance, similar to the waterfall plot but in a more compact form. It shows how the features push the prediction from the base value to the final output, with features pushing towards higher income shown in red and those pushing towards lower income shown in blue. The length of the arrows indicates the magnitude of the contribution. Like the waterfall plot, it’s important to remember that the base value is the average model output, so the plot illustrates how the specific feature values of the instance influence its prediction compared to an average case. This means that even if all features push towards a higher income (red arrows), the prediction can still be <=50K if the base value is low enough and the contributions are not strong enough to push it over the threshold (>50% probability).
+                    """)
+
         with lime_tab:
             st.header("LIME Explanation")
             index = st.number_input("Enter index of instance to explain", min_value=0, max_value=st.session_state.processed_data.shape[0]-1, step=1, key="lime_index")
             explainability_methods.LIME_explanation(st.session_state.LIME_explainer, index, st.session_state.processed_data, st.session_state.xgb_model)
+
+            info_box("""
+                The LIME explanation highlights the most influential features for a specific instance by showing how they contribute to the prediction. It provides a local approximation of the model's behavior around that instance, indicating which features push the prediction towards higher or lower income. The feature weights indicate the strength of their influence, with positive weights pushing towards >50K and negative weights pushing towards <=50K. The accompanying table shows the exact feature contributions in terms of weights, providing a clear view of which factors were most important for that specific prediction.
+                 """)
 
 
 if __name__ == "__main__":
