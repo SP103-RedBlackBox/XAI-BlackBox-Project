@@ -314,6 +314,5 @@ def main():
                     The LIME explanation highlights the most influential features for a specific instance by showing how they contribute to the prediction. It provides a local approximation of the model's behavior around that instance, indicating which features push the prediction towards higher or lower income. The feature weights indicate the strength of their influence, with positive weights pushing towards >50K and negative weights pushing towards <=50K. The accompanying table shows the exact feature contributions in terms of weights, providing a clear view of which factors were most important for that specific prediction.
                     """)
 
-
 if __name__ == "__main__":
     main()    
