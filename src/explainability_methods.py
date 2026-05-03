@@ -11,7 +11,7 @@ from pathlib import Path
 # Loads saved model
 @st.cache_resource
 def load_model_preprocessor():
-    root_dir = Path().resolve().parent
+    root_dir = Path(__file__).resolve().parent.parent
     model_path = root_dir / "models" / "xgb_pipeline.joblib"
     saved_model = joblib.load(model_path)
     model = saved_model.named_steps['model']
@@ -21,13 +21,13 @@ def load_model_preprocessor():
 
 # Load SHAP and LIME explainers
 def load_SHAP_explainer(model, preprocessor, X_preprocessed):
-    root_dir = Path().resolve().parent
+    root_dir = Path(__file__).resolve().parent.parent
     background = joblib.load(root_dir / 'data' / 'background_sample.joblib')
     explainer = shap.TreeExplainer(model, background, model_output='probability', feature_names=preprocessor.get_feature_names_out())
     return explainer
 
 def load_LIME_explainer(model, preprocessor):
-    root_dir = Path().resolve().parent
+    root_dir = Path(__file__).resolve().parent.parent
     background = joblib.load(root_dir / 'data' / 'background_sample.joblib')
     explainer = LimeTabularExplainer(
     training_data=background,
