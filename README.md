@@ -5,6 +5,14 @@ An interactive Explainable AI (XAI) web application that predicts whether an ind
 ## Live Demo
 [sp103blackbox.streamlit.app](https://sp103blackbox.streamlit.app)
 
+## Team
+| Name | Role |
+|---|---|
+| Shamir Howlader | Team Lead |
+| Phillip Pham | Dev/Doc |
+| Dang Tran | Dev/Doc |
+| Sai Samudrala | Dev/Doc |
+
 ## Overview
 This project trains an XGBoost binary classifier on the UCI Adult Census Income dataset and wraps it in a Streamlit web interface. Users can input data manually or upload a CSV file for batch predictions. The dashboard provides prediction confidence scores and explainability visualizations using SHAP and LIME to make the model's decisions transparent and interpretable.
 
